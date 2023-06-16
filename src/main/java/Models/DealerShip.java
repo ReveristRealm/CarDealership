@@ -3,13 +3,13 @@ package Models;
 import java.util.ArrayList;
 
 public class DealerShip {
-    private int dealership_id;
+    private String dealership_id;
     private String namee;
     private String phone;
     private String address;
     private ArrayList<Vehicles> Inventory;
 
-    public DealerShip(int dealership_id, String namee, String phone, String address) {
+    public DealerShip(String dealership_id, String namee, String phone, String address) {
         this.dealership_id = dealership_id;
         this.namee = namee;
         this.phone = phone;
@@ -17,11 +17,11 @@ public class DealerShip {
         Inventory = new ArrayList<>();
     }
 
-    public int getDealership_id() {
+    public String getDealership_id() {
         return dealership_id;
     }
 
-    public void setDealership_id(int dealership_id) {
+    public void setDealership_id(String dealership_id) {
         this.dealership_id = dealership_id;
     }
 
