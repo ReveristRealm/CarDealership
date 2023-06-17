@@ -51,4 +51,15 @@ public class DealerShip {
     public void addVehicle(Vehicles vehicle){
         Inventory.add(vehicle);
     }
+
+    @Override
+    public String toString() {
+        return "DealerShip{" +
+                "dealership_id='" + dealership_id + '\'' +
+                ", namee='" + namee + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", Inventory=" + Inventory +
+                '}';
+    }
 }

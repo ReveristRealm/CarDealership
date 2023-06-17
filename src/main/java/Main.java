@@ -1,4 +1,5 @@
 import Models.DealerShip;
+import Models.Vehicles;
 import org.apache.commons.dbcp2.BasicDataSource;
 import java.sql.*;
 import java.util.Scanner;
@@ -50,59 +51,50 @@ public class Main {
             }
             System.out.println("Select by the ID which dealership you want");
 
-            String response = userInput.next();
+            int response = userInput.nextInt();
 
             String query2 = "SELECT * FROM dealership WHERE dealership_id = ?;";
 
             statement = connection.prepareStatement(query2);
 
-            statement.setString(1,response);
+            statement.setInt(1,response);
 
             results = statement.executeQuery();
 
-            dealerShip = new DealerShip(results.getString("dealership_id"),results.getString("namee"), results.getString("address"), results.getString("phone"));
-
-            loadDealership(dealerShip);
+            while(results.next()) {
+                dealerShip = new DealerShip(results.getString("dealership_id"), results.getString("namee"), results.getString("address"), results.getString("phone"));
+                System.out.println(dealerShip);
+            }
+            loadDealership();
 
         }catch(Exception e){
             System.out.println();
-        }finally{
-            if (statement != null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (results != null ){
-                try {
-                    results.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
-    public static void loadDealership(DealerShip dealerShip){
+    public static void loadDealership(){
         try{
             String query = "SELECT * FROM inventory LEFT JOIN vehicles ON vehicles.vin = inventory.vin WHERE dealership_id = ?;";
             String id = dealerShip.getDealership_id();
             statement = connection.prepareStatement(query);
             statement.setString(1,id);
             results = statement.executeQuery();
-            /*
+
             while(results.next()){
-                String id = results.getString("");
+                String vin = results.getString("vin");
+                int year = results.getInt("yearr");
+                String make = results.getString("make");
+                String model = results.getString("model");
+                String color = results.getString("color");
+                int odometer = results.getInt("odometer");
+                double price = results.getDouble("price");
+
+                Vehicles car = new Vehicles(vin,year,make,model,color,odometer,price);
+                dealerShip.addVehicle(car);
+                System.out.println(car);
+                System.out.println("===========================");
             }
-             */
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally{
