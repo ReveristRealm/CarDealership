@@ -69,12 +69,14 @@ public class Main {
             boolean truee = true;
         while(truee) {
             System.out.println("Select what option you would like ?");
-            System.out.println("1) By price range?");
-            System.out.println("2) By make/model");
-            System.out.println("3) By year range");
-            System.out.println("4) By color");
-            System.out.println("5) By mileage range");
-            System.out.println("6) Exit");
+            System.out.println("1) Search for car by price range?");
+            System.out.println("2) Search for car by make/model");
+            System.out.println("3) Search for car by year range");
+            System.out.println("4) Search for car by By color");
+            System.out.println("5) Search for car by By mileage range");
+            System.out.println("6) Add a vehicle");
+            System.out.println("7) Delete a vehicle");
+            System.out.println("8) Exit");
 
             int option = userInput.nextInt();
 
@@ -113,6 +115,32 @@ public class Main {
                     SearchByYMileageRange(smile,emile);
                     break;
                 case 6:
+                    System.out.println("Enter the details of the car you want to enter");
+                    System.out.println("Vin : ");
+                    String vin = userInput.next();
+                    System.out.println("Year: ");
+                    int year = userInput.nextInt();
+                    System.out.println("Make: ");
+                    String makee = userInput.next();
+                    System.out.println("Model: ");
+                    String modell = userInput.next();
+                    System.out.println("Color: ");
+                    String colorr = userInput.next();
+                    System.out.println("Odometer: ");
+                    int odometer = userInput.nextInt();
+                    System.out.println("Price");
+                    double price = userInput.nextDouble();
+                    Vehicles vehicle = new Vehicles(vin,year,makee,modell,colorr,odometer,price);
+                    dealerShip.addVehicle(vehicle);
+                    AddVehicle(vehicle);
+                case 7:
+                    for(Vehicles car: dealerShip.getInventory()){
+                        System.out.println(car);
+                    }
+                    System.out.println("What is the VIN of the car you want to delete");
+                    String delete = userInput.next();
+                    DeleteVehicle(delete);
+                case 8:
                     truee = false;
                     break;
                 default:
@@ -153,6 +181,9 @@ public class Main {
 
     }
     public static void SearchByPriceRange(int start, int end) {
+        /*
+        SQL query: SELECT * FROM vehicles WHERE price > start AND price < end;
+         */
        for (Vehicles vehicles: dealerShip.getInventory()){
            if (vehicles.getPrice() > start && vehicles.getPrice() < end) {
                System.out.println(vehicles);
@@ -161,6 +192,9 @@ public class Main {
        }
     }
     public static void SearchByMakeModel(String make, String model){
+        /*
+        SQL query : SELECT * FROM vehicles WHERE make LIKE 'make' AND model LIKE 'model';
+         */
         for (Vehicles vehicles: dealerShip.getInventory()){
             if (vehicles.getMake().equalsIgnoreCase(make) && vehicles.getModel().equalsIgnoreCase(model)){
                 System.out.println(vehicles);
@@ -169,6 +203,9 @@ public class Main {
         }
     }
     public static void SearchByYearRange(int start, int end){
+        /*
+        SQL query: SELECT * FROM vehicles WHERE yearr > start AND yearr < end;
+         */
         for (Vehicles vehicles: dealerShip.getInventory()){
                 if (vehicles.getYear() > start && vehicles.getYear() < end) {
                 System.out.println(vehicles);
@@ -177,6 +214,9 @@ public class Main {
         }
     }
     public static void SearchByColor(String color){
+        /*
+        SQL query :SELECT * FROM vehicles WHERE color LIKE color;
+         */
         for (Vehicles vehicles: dealerShip.getInventory()){
             if (vehicles.getColor().equalsIgnoreCase(color)){
                 System.out.println(vehicles);
@@ -185,6 +225,9 @@ public class Main {
         }
     }
     public static void SearchByYMileageRange(int start, int end){
+        /*
+        SQL query:  SELECT * FROM vehicles WHERE odometer > 2000 AND odometer < 10000;
+         */
         for (Vehicles vehicles: dealerShip.getInventory()){
             if (vehicles.getOdometer() > start && vehicles.getOdometer() < end) {
                 System.out.println(vehicles);
@@ -192,6 +235,33 @@ public class Main {
             }
         }
     }
+    public static void AddVehicle(Vehicles vehicle){
+        try {
+            String query3 = "INSERT INTO vehicles(vin, yearr, make, model, color, odometer, price, sold) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            statement = connection.prepareStatement(query3,statement.RETURN_GENERATED_KEYS);
 
+            statement.setString(1,vehicle.getVin());
+            statement.setInt(2, vehicle.getYear());
+            statement.setString(3,vehicle.getMake());
+            statement.setString(4,vehicle.getModel());
+            statement.setString(5,vehicle.getColor());
+            statement.setInt(6, vehicle.getOdometer());
+            statement.setDouble(7, vehicle.getPrice());
+            statement.setBoolean(8,false);
+
+            statement.executeUpdate();
+
+            ResultSet generatedKeys =statement.getGeneratedKeys();
+            if(generatedKeys.next()){
+                int key = generatedKeys.getInt(1);
+                System.out.println("Generated ID: " + key );
+            }
+        }catch(Exception e){
+            System.out.println("No");
+        }
+    }
+    public static void DeleteVehicle(String vin){
+
+    }
 }
 
