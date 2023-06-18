@@ -51,6 +51,9 @@ public class DealerShip {
     public void addVehicle(Vehicles vehicle){
         Inventory.add(vehicle);
     }
+    public ArrayList<Vehicles> getInventory(){
+        return Inventory;
+    }
 
     @Override
     public String toString() {

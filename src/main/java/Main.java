@@ -66,7 +66,59 @@ public class Main {
                 System.out.println(dealerShip);
             }
             loadDealership();
+            boolean truee = true;
+        while(truee) {
+            System.out.println("Select what option you would like ?");
+            System.out.println("1) By price range?");
+            System.out.println("2) By make/model");
+            System.out.println("3) By year range");
+            System.out.println("4) By color");
+            System.out.println("5) By mileage range");
+            System.out.println("6) Exit");
 
+            int option = userInput.nextInt();
+
+            switch (option) {
+                case 1:
+                    System.out.println("What is the starting number?");
+                    int start = userInput.nextInt();
+                    System.out.println("What is the ending number");
+                    int end = userInput.nextInt();
+                    SearchByPriceRange(start,end);
+                    break;
+                case 2:
+                    System.out.println("What is the make of the car");
+                    String make = userInput.next();
+                    System.out.println("What is the model of the car");
+                    String model = userInput.next();
+                    SearchByMakeModel(make,model);
+                    break;
+                case 3:
+                    System.out.println("What is the starting year?");
+                    int start2 = userInput.nextInt();
+                    System.out.println("What is the ending year");
+                    int end2 = userInput.nextInt();
+                    SearchByYearRange(start2,end2);
+                    break;
+                case 4:
+                    System.out.println("What is the color you want?");
+                    String color = userInput.next();
+                    SearchByColor(color);
+                    break;
+                case 5:
+                    System.out.println("What is starting mileage");
+                    int smile = userInput.nextInt();
+                    System.out.println("What is ending mileage");
+                    int emile = userInput.nextInt();
+                    SearchByYMileageRange(smile,emile);
+                    break;
+                case 6:
+                    truee = false;
+                    break;
+                default:
+                    System.out.println("Wrong input, Try again");
+            }
+        }
         }catch(Exception e){
             System.out.println();
         }
@@ -97,10 +149,49 @@ public class Main {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }finally{
-
         }
 
     }
+    public static void SearchByPriceRange(int start, int end) {
+       for (Vehicles vehicles: dealerShip.getInventory()){
+           if (vehicles.getPrice() > start && vehicles.getPrice() < end) {
+               System.out.println(vehicles);
+               System.out.println("==============");
+           }
+       }
+    }
+    public static void SearchByMakeModel(String make, String model){
+        for (Vehicles vehicles: dealerShip.getInventory()){
+            if (vehicles.getMake().equalsIgnoreCase(make) && vehicles.getModel().equalsIgnoreCase(model)){
+                System.out.println(vehicles);
+                System.out.println("==============");
+            }
+        }
+    }
+    public static void SearchByYearRange(int start, int end){
+        for (Vehicles vehicles: dealerShip.getInventory()){
+                if (vehicles.getYear() > start && vehicles.getYear() < end) {
+                System.out.println(vehicles);
+                System.out.println("==============");
+            }
+        }
+    }
+    public static void SearchByColor(String color){
+        for (Vehicles vehicles: dealerShip.getInventory()){
+            if (vehicles.getColor().equalsIgnoreCase(color)){
+                System.out.println(vehicles);
+                System.out.println("==============");
+            }
+        }
+    }
+    public static void SearchByYMileageRange(int start, int end){
+        for (Vehicles vehicles: dealerShip.getInventory()){
+            if (vehicles.getOdometer() > start && vehicles.getOdometer() < end) {
+                System.out.println(vehicles);
+                System.out.println("==============");
+            }
+        }
+    }
+
 }
 
