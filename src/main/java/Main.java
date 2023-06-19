@@ -16,12 +16,6 @@ public class Main {
         String username = args[0];
         String password = args[1];
 
-        /*
-        Connection connection = null;
-        ResultSet results = null;
-        PreparedStatement statement = null;
-        */
-
         basicDataSource  = new BasicDataSource();
         basicDataSource.setUrl("jdbc:mysql://localhost:3306/dealership");
         basicDataSource.setUsername(username);
@@ -133,6 +127,7 @@ public class Main {
                     Vehicles vehicle = new Vehicles(vin,year,makee,modell,colorr,odometer,price);
                     dealerShip.addVehicle(vehicle);
                     AddVehicle(vehicle);
+                    break;
                 case 7:
                     for(Vehicles car: dealerShip.getInventory()){
                         System.out.println(car);
@@ -140,6 +135,7 @@ public class Main {
                     System.out.println("What is the VIN of the car you want to delete");
                     String delete = userInput.next();
                     DeleteVehicle(delete);
+                    break;
                 case 8:
                     truee = false;
                     break;
@@ -256,11 +252,42 @@ public class Main {
                 int key = generatedKeys.getInt(1);
                 System.out.println("Generated ID: " + key );
             }
+
+            String query4 = "INSERT INTO inventory VALUES(?,?);";
+            statement = connection.prepareStatement(query4);
+            statement.setString(1,dealerShip.getDealership_id());
+            statement.setString(2, vehicle.getVin());
+            statement.executeUpdate();
         }catch(Exception e){
             System.out.println("No");
         }
     }
     public static void DeleteVehicle(String vin){
+        try{
+            String query = "DELETE FROM inventory WHERE vin LIKE '?';";
+
+            statement = connection.prepareStatement(query);
+
+            statement.setString(1,vin);
+
+            statement.executeUpdate();
+
+            for (Vehicles car: dealerShip.getInventory()){
+                if(car.getVin().equals(vin)){
+                    dealerShip.getInventory().remove(car);
+                }
+            }
+
+            String query2 = "DELETE FROM vehicles WHERE vin LIKE '?'";
+
+            statement = connection.prepareStatement(query2);
+
+            statement.setString(1,vin);
+
+            statement.executeUpdate();
+        }catch(Exception e){
+            System.out.println("Hi");
+        }
 
     }
 }
