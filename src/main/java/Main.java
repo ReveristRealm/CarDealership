@@ -1,4 +1,6 @@
 import Models.DealerShip;
+import Models.LeaseContract;
+import Models.SalesContract;
 import Models.Vehicles;
 import org.apache.commons.dbcp2.BasicDataSource;
 import java.sql.*;
@@ -22,7 +24,8 @@ public class Main {
         basicDataSource.setPassword(password);
 
         VehicleDAO data = new VehicleDAO(basicDataSource);
-        try{
+        try
+        {
             connection = data.getMyDataSource().getConnection();
 
             String query = "SELECT * FROM dealership;";
@@ -31,7 +34,8 @@ public class Main {
 
             results = statement.executeQuery();
 
-            while(results.next()){
+            while(results.next())
+            {
                 int id = results.getInt("dealership_id");
                 String name = results.getString("namee");
                 String address = results.getString("address");
@@ -55,13 +59,15 @@ public class Main {
 
             results = statement.executeQuery();
 
-            while(results.next()) {
+            while(results.next())
+            {
                 dealerShip = new DealerShip(results.getString("dealership_id"), results.getString("namee"), results.getString("address"), results.getString("phone"));
                 System.out.println(dealerShip);
             }
             loadDealership();
             boolean truee = true;
-        while(truee) {
+        while(truee)
+        {
             System.out.println("Select what option you would like ?");
             System.out.println("1) Search for car by price range?");
             System.out.println("2) Search for car by make/model");
@@ -70,11 +76,14 @@ public class Main {
             System.out.println("5) Search for car by By mileage range");
             System.out.println("6) Add a vehicle");
             System.out.println("7) Delete a vehicle");
-            System.out.println("8) Exit");
+            System.out.println("8) Create Sales Contract");
+            System.out.println("9) Create Lease Contract");
+            System.out.println("0) Exit");
 
             int option = userInput.nextInt();
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     System.out.println("What is the starting number?");
                     int start = userInput.nextInt();
@@ -137,18 +146,40 @@ public class Main {
                     DeleteVehicle(delete);
                     break;
                 case 8:
+                    System.out.println("What is the vin?");
+                    String vinn = userInput.next();
+                    System.out.println("What is the date you completed this (YYYY-MM-DD)?");
+                    String date = userInput.next();
+                    System.out.println("What is the price you made this transaction ?");
+                    double pricee = userInput.nextDouble();
+                    SalesContract contract = new SalesContract(vinn,date,pricee);
+                    SaveSaleContract(contract);
+                case 9:
+                    System.out.println("What is the vin?");
+                    String vinnn = userInput.next();
+                    System.out.println("What is the start date (YYYY-MM-DD)");
+                    String datee = userInput.next();
+                    System.out.println("What is the end date (YYYY-MM-DD)");
+                    String date2 = userInput.next();
+                    System.out.println("Monthly payment?");
+                    String price2 = userInput.next();
+                    LeaseContract contractt = new LeaseContract(vinnn, datee,date2,price2);
+                    SaveLeaseContract(contractt);
+                case 0:
                     truee = false;
                     break;
                 default:
                     System.out.println("Wrong input, Try again");
             }
         }
-        }catch(Exception e){
+        }catch(Exception e)
+        {
             System.out.println();
         }
     }
 
-    public static void loadDealership(){
+    public static void loadDealership()
+    {
         try{
             String query = "SELECT * FROM inventory LEFT JOIN vehicles ON vehicles.vin = inventory.vin WHERE dealership_id = ?;";
             String id = dealerShip.getDealership_id();
@@ -176,7 +207,8 @@ public class Main {
         }
 
     }
-    public static void SearchByPriceRange(int start, int end) {
+    public static void SearchByPriceRange(int start, int end)
+    {
         /*
         SQL query: SELECT * FROM vehicles WHERE price > start AND price < end;
          */
@@ -187,7 +219,8 @@ public class Main {
            }
        }
     }
-    public static void SearchByMakeModel(String make, String model){
+    public static void SearchByMakeModel(String make, String model)
+    {
         /*
         SQL query : SELECT * FROM vehicles WHERE make LIKE 'make' AND model LIKE 'model';
          */
@@ -198,7 +231,8 @@ public class Main {
             }
         }
     }
-    public static void SearchByYearRange(int start, int end){
+    public static void SearchByYearRange(int start, int end)
+    {
         /*
         SQL query: SELECT * FROM vehicles WHERE yearr > start AND yearr < end;
          */
@@ -209,7 +243,8 @@ public class Main {
             }
         }
     }
-    public static void SearchByColor(String color){
+    public static void SearchByColor(String color)
+    {
         /*
         SQL query :SELECT * FROM vehicles WHERE color LIKE color;
          */
@@ -220,7 +255,8 @@ public class Main {
             }
         }
     }
-    public static void SearchByYMileageRange(int start, int end){
+    public static void SearchByYMileageRange(int start, int end)
+    {
         /*
         SQL query:  SELECT * FROM vehicles WHERE odometer > 2000 AND odometer < 10000;
          */
@@ -231,7 +267,8 @@ public class Main {
             }
         }
     }
-    public static void AddVehicle(Vehicles vehicle){
+    public static void AddVehicle(Vehicles vehicle)
+    {
         try {
             String query3 = "INSERT INTO vehicles(vin, yearr, make, model, color, odometer, price, sold) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             statement = connection.prepareStatement(query3,statement.RETURN_GENERATED_KEYS);
@@ -262,9 +299,11 @@ public class Main {
             System.out.println("No");
         }
     }
-    public static void DeleteVehicle(String vin){
-        try{
-            String query = "DELETE FROM inventory WHERE vin LIKE '?';";
+    public static void DeleteVehicle(String vin)
+    {
+        try
+        {
+            String query = "DELETE FROM inventory WHERE vin LIKE ?;";
 
             statement = connection.prepareStatement(query);
 
@@ -272,8 +311,10 @@ public class Main {
 
             statement.executeUpdate();
 
-            for (Vehicles car: dealerShip.getInventory()){
-                if(car.getVin().equals(vin)){
+            for (Vehicles car: dealerShip.getInventory())
+            {
+                if(car.getVin().equals(vin))
+                {
                     dealerShip.getInventory().remove(car);
                 }
             }
@@ -289,6 +330,62 @@ public class Main {
             System.out.println("Hi");
         }
 
+    }
+    public static void SaveSaleContract(SalesContract contract)
+    {
+        try
+        {
+            String query = "INSERT INTO sales_contracts (vin, sale_date, price) VALUES(?,?,?)";
+            statement = connection.prepareStatement(query);
+
+            statement.setString(1, contract.getVin());
+
+            statement.setString(2, contract.getDate());
+
+            statement.setString(3, String.valueOf(contract.getPrice()));
+
+            statement.executeUpdate();
+
+            String queryy = "UPDATE vehicles SET sold = true WHERE vin LIKE ?";
+
+            statement = connection.prepareStatement(queryy);
+
+            statement.setString(1, contract.getVin());
+
+            statement.executeUpdate();
+
+        }catch(Exception e){
+            System.out.println("Hi!");
+        }
+    }
+    public static void SaveLeaseContract(LeaseContract contract)
+    {
+        try
+        {
+            String query ="INSERT INTO lease_contracts ((vin , lease_start, lease_end, monthly_payment) VALUES (?,?,?,?)";
+
+            statement = connection.prepareStatement(query);
+
+            statement.setString(1, contract.getVin());
+
+            statement.setString(2, contract.getStartdate());
+
+            statement.setString(3, contract.getEnddate());
+
+            statement.setString(4, contract.getMonthlypayment());
+
+            statement.executeUpdate();
+
+            String queryy = "UPDATE vehicles SET sold = true WHERE vin LIKE ?";
+
+            statement = connection.prepareStatement(queryy);
+
+            statement.setString(1, contract.getVin());
+
+            statement.executeUpdate();
+        }catch(Exception e){
+            System.out.println("Hi");
+        }
     }
 }
 
